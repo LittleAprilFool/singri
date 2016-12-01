@@ -1,18 +1,21 @@
 <template lang="jade">
 div
-  div.piano
+  div.wrapout
     div.wrap
       div.gwhite
         - for(var i = 0; i < 14; i++)
-          div.key.white(id= 'wk-' + i, v-on:click="play($event)")
+          div.container.note.wnote(id= 'wk-' + i)
       div.gblack
         - for(var i = 0; i < 13; i++)
-          div.key.black(id= 'bk-' + i, v-on:click="play($event)")
-  div
-      button(v-on:click="show = !show") Toggle
-      transition(name="fade")
-        h2(v-if="show") hello
-
+          div.container.note.bnote(id= 'bk-' + i)
+  div.wrapout
+    div.wrap
+      div.gwhite
+        - for(var i = 0; i < 14; i++)
+          div.container.key.wkey(id= 'wk-' + i, v-on:click="play($event)")
+      div.gblack
+        - for(var i = 0; i < 13; i++)
+          div.container.key.bkey(id= 'bk-' + i, v-on:click="play($event)")
   </button>
 </template>
 <script>
@@ -20,7 +23,6 @@ export default {
   name: 'hello',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
       show: true
     }
   },
@@ -29,9 +31,21 @@ export default {
       var sound = document.createElement('audio')
       sound.setAttribute('src', '/static/' + event.target.id + '.mp3')
       event.target.appendChild(sound)
+      event.target.classList.add('keydown')
       sound.play()
+      var container = document.querySelector('.note#' + event.target.id)
+      var note = document.createElement('div')
+      var text = ['♬', '♪', '♩', '♭', '♪', '๑', '❀', '☃', '☂', '❤']
+      // note.textContent = text[Math.floor(Math.random() * 10)]
+      note.textContent = text[1]
+      note.className = 'littlenote'
+      note.style['color'] = '#' + Math.floor(Math.random() * 16777215).toString(16)
+      container.appendChild(note)
       sound.onended = function () {
         this.remove()
+        event.target.classList.remove('keydown')
+        note.remove()
+        // note.classList.remove('dance')
       }
     }
   }
@@ -39,7 +53,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss" scoped>
+<style lang="scss">
 $keyColor: #eeffcc;
 $keyBorder: #cccccc;
 p {
@@ -55,24 +69,46 @@ h2 {
   display: block;
   text-align: left;
 }
-.key {
+.container {
   border: solid 1px #ffffff;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
   display: inline;
   float: left;
 }
-.white {
+.key {
+  transition: all .5s ease;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.note {
+  border: transparent;
+  height: 200px;
+}
+.wkey {
   box-shadow:inset 0px 0px 0px 1px $keyBorder;
   width: 50px;
   height: 120px;
+  background: #ffffff;
 }
-.black {
+.wnote {
+  width: 50px;
+}
+.bnote {
+  width: 40px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.wkey:hover {
+  background: #eeeeee;
+}
+.bkey {
   background: #000000;
   width: 40px;
   height: 80px;
   margin-left: 5px;
   margin-right: 5px;
+}
+.bkey:hover {
+  background: #555555;
 }
 .gwhite {
   display: inline;
@@ -87,7 +123,7 @@ h2 {
 #bk-2, #bk-6, #bk-9 {
   visibility:hidden;
 }
-.piano {
+.wrapout {
     float: left;
     position: relative;
     left: 50%;
@@ -97,14 +133,21 @@ h2 {
     position: relative;
     left: -50%;
     width: 780px;
+    height: 200px;
 }
-.fade-enter-active, .fade-leave-active{
-  transition: all .8s ease;
+
+@keyframes dance {
+  0% {top:0px; opacity:0;}
+  30% {opacity:1;}
+  100% {color:yellow; top:100px; opacity: 0;}
 }
-.fade-enter, .fade-leave-active{
-  opacity: .5;
+
+.littlenote {
+  font-size: 2em;
+  position: absolute;
+  padding-left: 15px;
+  animation-name: dance;
+  animation-duration: 2.5s;
 }
-.fade-enter-active {
-  opacity: .8;
-}
+
 </style>
