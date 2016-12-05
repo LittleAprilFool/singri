@@ -20,6 +20,10 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
   },
   'globals': {
-    'MIDI': true
+    'MIDI': true,
+    'MidiEvent': true,
+    'MidiTrack': true,
+    'MidiWriter': true,
+    '$': true
   }
 }
