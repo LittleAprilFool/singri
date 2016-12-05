@@ -1,101 +1,123 @@
 <template lang="jade">
-div
+ .out
   - start_note = 60
   - end_note = 91
-  div.wrapout
-    div.wrap
-      div.gwhite
-        - for(var i = start_note; i <= end_note; i++)
-          - if([1, 3, 6, 8, 10].indexOf(i%12) == -1)
-            div.container.note.wnote(id='p'+i)
-      div.gblack
-        - for(var i = start_note + 1; i <= end_note; i++)
-          - if([0, 1, 3, 4, 6, 8, 10].indexOf(i%12) != -1)
-            div.container.note.bnote(id='p'+i)
-  div.wrapout
-    div.wrap
-      div.gwhite
-        - for(var i = start_note; i <= end_note; i++)
-          - if([1, 3, 6, 8, 10].indexOf(i%12) == -1)
-            div.container.key.wkey(id='p'+i, v-on:click="play($event)", v-on:keyup.12="play($event)")
-      div.gblack
-        - for(var i = start_note + 1; i <= end_note; i++)
-          - if([1, 3, 6, 8, 10].indexOf(i%12) != -1)
-            div.container.key.bkey(id='p'+i, v-on:click="play($event)", v-on:keyup.12="play($event)")
-          - else
-            - if([0, 4].indexOf(i%12) != -1)
-              div.container.key.bkey(id='none')
-   div.wrapout
-     div.wrap(id='control')
-       button.btn-1(id='send', v-on:click="send") send
-  </button>
-</template>
+  - keyboard = ['q', '2', 'w', '3', 'e', 'r', '5', 't', '6', 'y', '7', 'u', 'z', 's', 'x', 'd', 'c', 'v', 'g', 'b', 'h', 'n', 'j', 'm', 'i', '9', 'o', '0', 'p', '[','=', ']'] 
+  loader.load
+  .piano
+    .staticpiano
+      .wrapout
+        .wrap.effect
+          wave.wave
+          .symbol
+            .gwhite
+              - for(var i = start_note; i <= end_note; i++)
+                - if([1, 3, 6, 8, 10].indexOf(i%12) == -1)
+                  .container.note.wnote(id='p'+i)
+            .gblack
+              - for(var i = start_note + 1; i <= end_note; i++)
+                - if([0, 1, 3, 4, 6, 8, 10].indexOf(i%12) != -1)
+                  .container.note.bnote(id='p'+i)
+      .wrapout
+        .wrap.keyboard
+          .gwhite
+            - for(var i = start_note; i <= end_note; i++)
+              - if([1, 3, 6, 8, 10].indexOf(i%12) == -1)
+                .container.key.wkey(id='p'+i, v-on:click='play(' + i + ')')
+          .gblack
+            - for(var i = start_note + 1; i <= end_note; i++)
+              - if([1, 3, 6, 8, 10].indexOf(i%12) != -1)
+                .container.key.bkey(id='p'+i, v-on:click='play(' + i + ')')
+              - else
+                - if([0, 4].indexOf(i%12) != -1)
+                  .container.key.bkey(id='none')
+      .wrapout
+        .wrap(id='control').control
+          .output
+            button.btn-2.unavailable(id='basic') basic
+            button.btn-2.unavailable(id='lookback') lookback
+            button.btn-2.unavailable(id='attention') attention
+            button.btn-2.unavailable(id='polyphonic') polyphonic
+            button.btn-2(v-on:click="playmidi('sample1.mid')") rbm1
+            button.btn-2(v-on:click="playmidi('sample2.mid')") rbm2
+          button.btn-1(id='send', v-on:click="send", v-on:keyup.32="test") send
+  </template>
+
 <script>
+import Loader from './Loader'
+import Wave from './Wave'
 const delay = 0 // play one note every quarter second
 const velocity = 127 // how hard the note hits
 let noteEvents = []
 let time = 0
 export default {
-  name: 'hello',
+  name: 'piano',
+  components: {
+    Loader,
+    Wave
+  },
   data () {
     return {
       show: true,
       result: []
     }
   },
+  mounted: function () {
+    let keyboard = ['q', '2', 'w', '3', 'e', 'r', '5', 't', '6', 'y', '7', 'u', 'z', 's', 'x', 'd', 'c', 'v', 'g', 'b', 'h', 'n', 'j', 'm', 'i', '9', 'o', '0', 'p', '[', '=', ']']
+    let keyboardfunc = (e) => {
+      if (keyboard.indexOf(e.key) !== -1) {
+        this.play(keyboard.indexOf(e.key) + 60)
+      }
+    }
+    window.addEventListener('keydown', keyboardfunc)
+  },
   methods: {
     send: function () {
+      let loader = document.querySelector('.load')
+      loader.style.display = 'block'
       let track = new MidiTrack({ events: noteEvents })
       let song = MidiWriter({ tracks: [track] })
       noteEvents = []
-      console.log(song.b64)
-      let oldselect = document.querySelector('.output')
+      let oldselect = document.querySelector('.available')
       if (oldselect == null) {
-        $.post('/generate_midi', song.b64, function (data, status) {
-          this.resul = JSON.parse(data)
-          let control = document.querySelector('#control')
-          let select = document.createElement('div')
-          select.className = 'output'
-          this.result.forEach(function (ele) {
-            var opt = document.createElement('button')
-            opt.textContent = ele.name
-            opt.className = 'btn-2'
-            opt.onclick = function () {
-              MIDI.Player.stop()
-              console.log(ele.midi)
-              MIDI.Player.loadFile('base64,' + ele.midi, MIDI.Player.start)
-            }
-            select.appendChild(opt)
-          })
-          control.appendChild(select)
+        let myHeaders = new Headers()
+        myHeaders.append('Content-Type', 'text/plain')
+        fetch('/generate_midi', {
+          method: 'POST',
+          body: song.b64,
+          headers: myHeaders
         })
-        // var testdata = '[{"name":"Basic", "midi": "TVRoZAAAAAYAAAABAIBNVHJrAAAAHwCQSFqBAIBIWk6QSlqBAIBKWjKQTFqBAIBMWgD/LwA="}, {"name": "Lookback", "midi": "TVRoZAAAAAYAAAABAIBNVHJrAAAAHwCQSFqBAIBIWk6QSlqBAIBKWjKQTFqBAIBMWgD/LwA="}, {"name": "Attention", "midi": "TVRoZAAAAAYAAAABAIBNVHJrAAAABAD/LwA="}, {"name": "Polyphonic", "midi": "TVRoZAAAAAYAAAABAIBNVHJrAAAABAD/LwA="}]'
-        // this.result = JSON.parse(testdata)
-        // let control = document.querySelector('#control')
-        // let select = document.createElement('div')
-        // select.className = 'output'
-        // this.result.forEach(function (ele) {
-        //   var opt = document.createElement('button')
-        //   opt.textContent = ele.name
-        //   opt.className = 'btn-2'
-        //   opt.onclick = function () {
-        //     MIDI.Player.stop()
-        //     console.log(ele.midi)
-        //     MIDI.Player.loadFile('base64,' + ele.midi, MIDI.Player.start)
-        //   }
-        //   select.appendChild(opt)
-        // })
-        // control.appendChild(select)
+        .then(function (res) {
+          return res.json()
+        })
+        .then(function (data) {
+          loader.style.display = 'none'
+          data.forEach(function (ele) {
+            var button = document.querySelector('#' + ele.name)
+            button.classList.remove('unavailable')
+            button.classList.add('available')
+            button.onclick = function () {
+              MIDI.Player.stop()
+              MIDI.Player.loadFile(ele.midi, MIDI.Player.start)
+              let symbol = document.querySelector('.symbol')
+              symbol.style.display = 'none'
+              let wave = document.querySelector('.wave')
+              wave.style.display = 'block'
+            }
+          })
+        })
       }
-      MIDI.Player.loadFile('base64,' + song.b64, MIDI.Player.start)
     },
-    play: function (event) {
+    play: function (noteid) {
+      let symbol = document.querySelector('.symbol')
+      symbol.style.display = 'block'
+      let wave = document.querySelector('.wave')
+      wave.style.display = 'none'
       let d = new Date()
       let duration = d.getTime() - time
       if (noteEvents.length === 0) duration = 0
       time = d.getTime()
       MIDI.Player.stop()
-      let noteid = event.target.id.substring(1, event.target.id.length)
       // play MIDI
       MIDI.noteOn(0, noteid, velocity, delay)
       MIDI.noteOff(0, noteid, delay + 0.75)
@@ -107,21 +129,40 @@ export default {
       note.duration = 128
       Array.prototype.push.apply(noteEvents, [MidiEvent.noteOff(note)])
       // delete output
-      let select = document.querySelector('.output')
-      if (select != null) select.remove()
+      let select = document.querySelector('.available')
+      if (select != null) {
+        select.classList.add('unavailable')
+        select.classList.remove('available')
+        select.onclick = function () {
+        }
+      }
+      // key down effect
+      let key = document.querySelector('.key#p' + noteid)
+      key.classList.add('press')
+      setTimeout(function () {
+        key.classList.remove('press')
+      }, 500)
       // add effect
-      let container = document.querySelector('.note#' + event.target.id)
+      let container = document.querySelector('.note#p' + noteid)
       let littlenote = document.createElement('div')
       let text = ['♬', '♪', '♩', '♭', '♪', '๑', '❀', '☃', '☂', '❤']
       littlenote.textContent = text[Math.floor(Math.random() * 10)]
       littlenote.textContent = text[1]
       littlenote.className = 'littlenote'
-      let flatcolor = ['#1abc9c', '#2ecc71', '#f1c40f', '#34495e', '#e74c3c', '#e67e22', '#3498db', '#9b59b6', '#f39c12', '#c0392b']
-      littlenote.style['color'] = flatcolor[Math.floor(Math.random() * 10)]
+      // let flatcolor = ['#1abc9c', '#2ecc71', '#f1c40f', '#34495e', '#e74c3c', '#e67e22', '#3498db', '#9b59b6', '#f39c12', '#c0392b']
+      littlenote.style['color'] = '#000'
       container.appendChild(littlenote)
       setTimeout(function () {
         littlenote.remove()
       }, 4000)
+    },
+    playmidi: function (file) {
+      let symbol = document.querySelector('.symbol')
+      symbol.style.display = 'none'
+      let wave = document.querySelector('.wave')
+      wave.style.display = 'block'
+      MIDI.Player.stop()
+      MIDI.Player.loadFile('static/' + file, MIDI.Player.start)
     }
   }
 }
@@ -136,19 +177,31 @@ p {
   text-align: center;
 }
 
+.staticpiano {
+  position: static;
+  padding-top: 60px;
+}
+
+.load {
+  display: none;
+}
+.wave{
+  display: none;
+}
+
 button {
   display: inline-block;
   border: none;
-  padding:20px 20px;
+  padding:15px 20px;
   margin: 15px 30px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-weight: 700;
-  font-size: 20px;
+  font-weight: 600;
+  font-size: 16px;
   outline: none;
   transition: all 0.3s;
   position: relative;
-  width: 200px;
+  width: 180px;
 }
 
 button:after{
@@ -176,22 +229,40 @@ button:after{
 	top: 6px;
 }
 
+.out {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  height: 600px;
+}
+
 .btn-2 {
   color : #fff;
-  font-size: 15px;
-  width: 150px;
+  font-size: 10px;
+  width: 100px;
   background: #fcad26;
-  padding: 25px 20px 25px 20px;
+  padding: 15px 5px 15px 5px;
 	overflow: hidden;
+}
+
+.btn-2.unavailable {
+  background: #fcd04b;
+  border: 2px dashed #f29e0d;
+  color: #f29e0d;
 }
 
 .btn-2:hover {
   background: #f29e0d;
 }
+.btn-2.unavailable:hover {
+  background: #fcd04b;
+}
 
 .btn-2:active {
 	background: #f58500;
 	top: 2px;
+}
+.btn-2.unavailable:active {
+  background: #fcd04b;
 }
 
 .btn-2:before {
@@ -205,7 +276,6 @@ button:after{
 	right: 10px;
 	z-index: 2;
 }
-
 .btn-2:after {
   width: 30%;
 	height: 200%;
@@ -256,10 +326,15 @@ h2 {
   margin-right: 5px;
 }
 .wkey:hover {
-  background: #eeeeee;
+  background: #eee;
+}
+.wkey.press {
+  background: #e0e0e0;
+  border: solid 1px #e0e0e0;
+  box-shadow: inset 0px -3px 0px 1px #e0e0e0;
 }
 .bkey {
-  background: #000000;
+  background: #000;
   width: 40px;
   height: 80px;
   margin-left: 5px;
@@ -267,7 +342,10 @@ h2 {
   border-top: 0px;
 }
 .bkey:hover {
-  background: #555555;
+  background: #333;
+}
+.bkey.press {
+  background: #444;
 }
 .gwhite {
   display: inline;
@@ -292,7 +370,15 @@ h2 {
     position: relative;
     left: -50%;
     width: 1000px;
-    height: 200px;
+}
+.wrap.keyboard {
+  height: 140px;
+}
+.wrap.effect {
+  height: 150px;
+}
+.wrap#control {
+  height: 20px;
 }
 
 @keyframes dance {

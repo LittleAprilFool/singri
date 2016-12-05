@@ -10,7 +10,6 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
-    "midi": "github:mudcube/MIDI.js",
     "socket.io-client": "^1.7.1",
     "vue": "^2.1.0"
   },

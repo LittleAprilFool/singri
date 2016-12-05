@@ -1,15 +1,23 @@
 <template>
   <div id="app">
-    <piano></piano>
+    <headline></headline>
+    <piano id="piano"></piano>
   </div>
 </template>
 
 <script>
 import Piano from './components/Piano'
+import Headline from './components/Headline'
 export default {
   name: 'app',
   components: {
-    Piano
+    Piano,
+    Headline
+  },
+  methods: {
+    test: function () {
+      console.log('haha')
+    }
   }
 }
 </script>
@@ -21,6 +29,17 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 10px;
+  overflow-y:hidden;
+}
+#piano {
+  position: fixed;
+  margin: 0;
+  left: 0;
+  height: 100%;
+  bottom: 0px;
+  padding-top: 50px;
+  overflow-y: hidden;
+  height:100%;
 }
 </style>

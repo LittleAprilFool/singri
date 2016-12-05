@@ -24,6 +24,10 @@ module.exports = {
     'MidiEvent': true,
     'MidiTrack': true,
     'MidiWriter': true,
-    '$': true
+    '$': true,
+    'fetch': true,
+    'Headers': true,
+    'd3': true,
+    'requestAnimationFrame': true
   }
 }
