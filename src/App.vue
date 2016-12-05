@@ -41,6 +41,7 @@ export default {
   left: 0;
   width: 100%;
   bottom: 0px;
+  height: 500px;
   overflow-y: hidden;
 }
 </style>

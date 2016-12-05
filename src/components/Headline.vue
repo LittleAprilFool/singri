@@ -3,7 +3,7 @@
   .headwrapout
     .headwrap
       img.title(src = 'static/singri.svg' )
-  button.btn-2(v-on:click="troggleabout($event)") about
+  button.btn-2.about(v-on:click="troggleabout($event)") about
   div.aboutus
     div.words
       h1 CMPT419 Final Project: A Survey of Neural Network Models for Music Generation
@@ -54,6 +54,11 @@ p {
   font-size: 20px
 }
 
+.about {
+  position: absolute;
+  right: 50px;
+}
+
 p.vt {
 
 }
@@ -71,16 +76,13 @@ p.vt {
   padding-top: 10px;
 }
 .headwrapout {
-    float: left;
     position: relative;
-    left: 50%;
+    margin: 0 auto;
+    width: 500px;
 }
 .headwrap {
-    float: left;
     position: relative;
-    left: -50%;
-    width: 1000px;
-    height: 130px;
+    width: 500px
 }
 .title{
   width: 150px;

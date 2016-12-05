@@ -358,6 +358,7 @@ h2 {
 .wrapout {
     position: relative;
     margin: 0 auto;
+    width: 1000px;
 }
 .wrap {
     position: relative;
