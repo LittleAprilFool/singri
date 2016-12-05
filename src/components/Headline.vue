@@ -76,13 +76,11 @@ p.vt {
   padding-top: 10px;
 }
 .headwrapout {
-    position: relative;
     margin: 0 auto;
     width: 500px;
 }
 .headwrap {
-    position: relative;
-    width: 500px
+    width: 100%px
 }
 .title{
   width: 150px;
