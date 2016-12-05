@@ -57,6 +57,7 @@ p {
 .about {
   position: absolute;
   right: 50px;
+  top:25px;
 }
 
 p.vt {
