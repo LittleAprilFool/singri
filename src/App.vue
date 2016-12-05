@@ -31,15 +31,16 @@ export default {
   color: #2c3e50;
   margin-top: 10px;
   overflow-y:hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 #piano {
-  position: fixed;
+  position: absolute;
   margin: 0;
   left: 0;
-  height: 100%;
+  width: 100%;
   bottom: 0px;
-  padding-top: 50px;
   overflow-y: hidden;
-  height:100%;
 }
 </style>

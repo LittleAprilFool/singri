@@ -5,9 +5,10 @@
       img.title(src = 'static/singri.svg' )
   button.btn-2(v-on:click="troggleabout($event)") about
   div.aboutus
-    h1 CMPT419 Final Project: A Survey of Neural Network Models for Music Generation
-    p Comparison, Training, Evaluation, and Application
-    p Ao Li, AprilWang, Hongpu Ma, Jingda Chen, Wenqian Chen @ SFU
+    div.words
+      h1 CMPT419 Final Project: A Survey of Neural Network Models for Music Generation
+      p.vt Comparison, Training, Evaluation, and Application
+      p.name Ao Li, AprilWang, Hongpu Ma, Jingda Chen, Wenqian Chen @ SFU
 </template>
 
 <script>
@@ -48,6 +49,16 @@ h1 {
 }
 p {
   color: #000;
+  margin: 40px;
+  font-weight: 800px;
+  font-size: 20px
+}
+
+p.vt {
+
+}
+.words {
+  padding-top: 50px;
 }
 .headline {
   overflow-x: hidden;

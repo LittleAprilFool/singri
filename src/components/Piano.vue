@@ -177,11 +177,6 @@ p {
   text-align: center;
 }
 
-.staticpiano {
-  position: static;
-  padding-top: 60px;
-}
-
 .load {
   display: none;
 }
@@ -361,14 +356,11 @@ h2 {
   visibility:hidden;
 }
 .wrapout {
-    float: left;
     position: relative;
-    left: 50%;
+    margin: 0 auto;
 }
 .wrap {
-    float: left;
     position: relative;
-    left: -50%;
     width: 1000px;
 }
 .wrap.keyboard {
