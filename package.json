@@ -1,7 +1,7 @@
 {
-  "name": "demo",
+  "name": "Singri",
   "version": "1.0.0",
-  "description": "project demo",
+  "description": "CMPT419 demo page",
   "author": "AprilWong <aprilwang.zju@gmail.com>",
   "private": true,
   "scripts": {
