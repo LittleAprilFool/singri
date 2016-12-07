@@ -1,7 +1,9 @@
 # Singri
 
 > project Singri
+>
 > using machine learning to generate music
+>
 > CMPT419 final project demo page
 > http://littleaprilfool.me/piano/
 
