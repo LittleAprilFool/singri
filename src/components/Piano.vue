@@ -34,10 +34,10 @@
       .wrapout
         .wrap(id='control').control
           .output
-            button.btn-2.unavailable(id='basic') basic
-            button.btn-2.unavailable(id='lookback') lookback
-            button.btn-2.unavailable(id='attention') attention
-            button.btn-2.unavailable(id='polyphonic') polyphonic
+            button.btn-2.unavailable(id='Basic') basic
+            button.btn-2.unavailable(id='Lookback') lookback
+            button.btn-2.unavailable(id='Attention') attention
+            button.btn-2.unavailable(id='Polyphonic') polyphonic
             button.btn-2(v-on:click="playmidi('sample1.mid')") rbm1
             button.btn-2(v-on:click="playmidi('sample2.mid')") rbm2
           button.btn-1(id='send', v-on:click="send", v-on:keyup.32="test") send
@@ -129,11 +129,13 @@ export default {
       note.duration = 128
       Array.prototype.push.apply(noteEvents, [MidiEvent.noteOff(note)])
       // delete output
-      let select = document.querySelector('.available')
+      let select = document.querySelectorAll('.available')
       if (select != null) {
-        select.classList.add('unavailable')
-        select.classList.remove('available')
-        select.onclick = function () {
+        for (let i in select) {
+          select[i].classList.add('unavailable')
+          select[i].classList.remove('available')
+          select[i].onclick = function () {
+          }
         }
       }
       // key down effect
